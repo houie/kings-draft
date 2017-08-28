@@ -65,6 +65,7 @@ class NavBar extends React.Component {
 		return (
 			<nav className="navbar sticky-top navbar-dark bg-black white-text">
 			    <span className="navbar-brand">Kings Draft</span>
+
 			      <div id="user-container">
 			        <div hidden id="user-pic"></div>
 			        <div hidden id="user-name"></div>

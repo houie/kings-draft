@@ -3,7 +3,8 @@ html, body {
 }
 main{
   height: 100%;
-  padding-bottom: 0;
+  padding-top: 0.75rem;
+  padding-bottom: 2.75rem;
 }
 .material-icons {
   position: relative;
@@ -58,13 +59,13 @@ main{
     background-size: 33px;
   }
 }
-.table-responsive {
-  padding-top: 10px;
-  padding-bottom: 50px;
-}  
 @media (max-width: 610px) {
-  .table-responsive {
-    padding-top: 50px;
-    padding-bottom: 75px;
-  }  
+  main{
+    height: 100%;
+    padding-top: 2.5rem;
+    padding-bottom: 4.5rem;
+  }
+}
+@media (max-width: 991px) {
+
 }

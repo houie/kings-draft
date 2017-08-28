@@ -66,27 +66,36 @@ class DraftTable extends React.Component {
         let gamesRef = db.ref('games');
         gamesRef.off();
   
+        var sortPicks = function(a, b) {
+            if (a.pick < b.pick) {
+                return -1;
+            }
+            if (a.pick > b.pick) {
+                return 1;
+            }
+            return 0;
+        }
+
         var showPicks = function(data) {
             var pickData = data.val();
-            var gameId = pickData.gameId;
-            gamesRef.child(gameId).once("value", function(data) {
-                var gameData = data.val();
-                var pick = {
-                    "pick": pickData.pick,
-                    "shareholder": pickData.shareholder,
-                    "gameId": pickData.gameId,
-                    "opponent": gameData.opponent,
-                    "date": gameData.date
-                };
-                _this.setState({ picks: _this.state.picks.concat([pick]) });
+            picksRef.child(pickData.pick).once("value", function(picksValue) {
+                gamesRef.child(pickData.gameId).once("value", function(gameValue) {
+                    var gameData = gameValue.val();
+                    var pick = {
+                        "pick": pickData.pick,
+                        "shareholder": pickData.shareholder,
+                        "gameId": pickData.gameId,
+                        "opponent": gameData.opponent,
+                        "date": gameData.date
+                    };
+                    _this.setState({ picks: _this.state.picks.concat([pick]).sort(sortPicks) });
+
+                });
             });
         };
-        var clearPicks = function() {
-            _this.setState({picks: []});
-        };
-        picksRef.orderByKey().on('child_added', showPicks);
-        picksRef.orderByKey().on('child_changed', showPicks);
-        picksRef.orderByKey().on('child_removed', clearPicks);
+        picksRef.on('child_added', showPicks);
+        picksRef.on('child_changed', showPicks);
+        picksRef.on('child_removed', _this.clearPicks);
     }
 
     clearPicks() {
@@ -105,16 +114,10 @@ class DraftTable extends React.Component {
         var result;
         if (_this.state.picks && _this.state.picks.length > 0) {
             result = (
-                <div className="container">
-                <div className="row justify-content-center">
-                    <div className="col-12">
-                    <table className="table table-sm table-responsive table-striped">
-                        <DraftTableHead/>
-                        <DraftTableBody data={_this.state.picks}/>
-                    </table>
-                    </div>
-                </div>
-                </div>
+                <table className="table table-sm table-responsive table-striped">
+                    <DraftTableHead/>
+                    <DraftTableBody data={_this.state.picks}/>
+                </table>
             );  
         }
         else {
